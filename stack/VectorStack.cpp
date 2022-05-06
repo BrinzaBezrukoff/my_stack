@@ -4,6 +4,8 @@
 
 #include "VectorStack.h"
 
+#include "stdexcept"
+
 
 VectorStack::VectorStack(const ValueType* valueArray, const size_t arraySize) {
     _vector.insert(_vector.begin(), valueArray, valueArray + arraySize);
@@ -14,6 +16,9 @@ void VectorStack::push(const ValueType& value) {
 }
 
 void VectorStack::pop() {
+    if (isEmpty()) {
+        throw std::runtime_error("Can't pop from empty stack!");
+    }
     _vector.pop_back();
 }
 

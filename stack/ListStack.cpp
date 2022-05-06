@@ -4,6 +4,8 @@
 
 #include "ListStack.h"
 
+#include "stdexcept"
+
 ListStack::ListStack(const ValueType* valueArray, const size_t arraySize) {
     _list.insert(_list.begin(), valueArray, valueArray + arraySize);
 }
@@ -13,6 +15,9 @@ void ListStack::push(const ValueType& value) {
 }
 
 void ListStack::pop() {
+    if (isEmpty()) {
+        throw std::runtime_error("Can't pop from empty stack!");
+    }
     _list.pop_back();
 }
 

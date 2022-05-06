@@ -65,9 +65,6 @@ void Stack::push(const ValueType& value)
 
 void Stack::pop()
 {
-    if (isEmpty()) {
-        throw std::length_error("Can't pop from empty stack!");
-    }
     _pimpl->pop();
 }
 
