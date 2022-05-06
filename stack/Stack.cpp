@@ -47,12 +47,32 @@ Stack::Stack(const ValueType* valueArray, const size_t arraySize, StackContainer
 
 Stack::Stack(const Stack& copyStack)
 {
-    // сами
+    _containerType = copyStack._containerType;
+    *_pimpl = *copyStack._pimpl;
 }
 
 Stack& Stack::operator=(const Stack& copyStack)
 {
-    // TODO: вставьте здесь оператор return
+    if (this != &copyStack) {
+        _containerType = copyStack._containerType;
+        delete _pimpl;
+        *_pimpl = *copyStack._pimpl;
+    }
+    return *this;
+}
+
+Stack::Stack(Stack&& moveStack) noexcept {
+    _containerType = moveStack._containerType;
+    _pimpl = moveStack._pimpl;
+}
+
+Stack& Stack::operator=(Stack&& moveStack) noexcept {
+    if (this != &moveStack) {
+        _containerType = moveStack._containerType;
+        delete _pimpl;
+        _pimpl = moveStack._pimpl;
+    }
+    return *this;
 }
 
 Stack::~Stack()
@@ -82,7 +102,7 @@ bool Stack::isEmpty() const
 
 size_t Stack::size() const
 {
-    return _pimpl->isEmpty();
+    return _pimpl->size();
 }
 
 
