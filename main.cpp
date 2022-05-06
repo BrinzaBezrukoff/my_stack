@@ -6,14 +6,15 @@
 int main() {
 
     Stack s;
+    s.push(12);
 
-    s.push(10);
-    s.push(20);
-    s.pop();
-    s.push(30);
+    Stack v (s);
 
     std::cout << s.top() << std::endl;
     std::cout << s.size() << std::endl;
+
+    std::cout << v.top() << std::endl;
+    std::cout << v.size() << std::endl;
 
     return 0;
 }

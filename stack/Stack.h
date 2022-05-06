@@ -51,6 +51,9 @@ private:
     IStackImplementation* _pimpl = nullptr;
     // тип контейнера, наверняка понадобится
     StackContainer _containerType;
+
+    void setImplementation(StackContainer container);
+    void setImplementation(const Stack& stack);
 };
 
 

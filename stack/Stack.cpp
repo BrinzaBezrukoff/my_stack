@@ -10,53 +10,29 @@
 #include <stdexcept>
 
 Stack::Stack(StackContainer container)
-        : _containerType(container)
 {
-    switch (container)
-    {
-        case StackContainer::List: {
-            _pimpl = static_cast<IStackImplementation*>(new ListStack());
-            break;
-        }
-        case StackContainer::Vector: {
-            _pimpl = static_cast<IStackImplementation*>(new VectorStack());
-            break;
-        }
-        default:
-            throw std::runtime_error("Неизвестный тип контейнера");
-    }
+    setImplementation(container);
 }
 
 Stack::Stack(const ValueType* valueArray, const size_t arraySize, StackContainer container)
-        : _containerType(container)
 {
-    switch (container)
-    {
-        case StackContainer::List: {
-            _pimpl = static_cast<IStackImplementation*>(new ListStack(valueArray, arraySize));
-            break;
-        }
-        case StackContainer::Vector: {
-            _pimpl = static_cast<IStackImplementation*>(new VectorStack(valueArray, arraySize));
-            break;
-        }
-        default:
-            throw std::runtime_error("Неизвестный тип контейнера");
+    setImplementation(container);
+    for (size_t idx = 0; idx < arraySize; idx++) {
+        push(valueArray[idx]);
     }
 }
 
 Stack::Stack(const Stack& copyStack)
+        : _containerType(copyStack._containerType)
 {
-    _containerType = copyStack._containerType;
-    *_pimpl = *copyStack._pimpl;
+    setImplementation(copyStack);
 }
 
 Stack& Stack::operator=(const Stack& copyStack)
 {
     if (this != &copyStack) {
-        _containerType = copyStack._containerType;
         delete _pimpl;
-        *_pimpl = *copyStack._pimpl;
+        setImplementation(copyStack);
     }
     return *this;
 }
@@ -64,13 +40,15 @@ Stack& Stack::operator=(const Stack& copyStack)
 Stack::Stack(Stack&& moveStack) noexcept {
     _containerType = moveStack._containerType;
     _pimpl = moveStack._pimpl;
+    moveStack._pimpl = nullptr;
 }
 
 Stack& Stack::operator=(Stack&& moveStack) noexcept {
     if (this != &moveStack) {
-        _containerType = moveStack._containerType;
         delete _pimpl;
+        _containerType = moveStack._containerType;
         _pimpl = moveStack._pimpl;
+        moveStack._pimpl = nullptr;
     }
     return *this;
 }
@@ -87,6 +65,9 @@ void Stack::push(const ValueType& value)
 
 void Stack::pop()
 {
+    if (isEmpty()) {
+        throw std::length_error("Can't pop from empty stack!");
+    }
     _pimpl->pop();
 }
 
@@ -105,4 +86,35 @@ size_t Stack::size() const
     return _pimpl->size();
 }
 
+void Stack::setImplementation(StackContainer container) {
+    switch (container)
+    {
+        case StackContainer::List: {
+            _pimpl = static_cast<IStackImplementation*>(new ListStack());
+            break;
+        }
+        case StackContainer::Vector: {
+            _pimpl = static_cast<IStackImplementation*>(new VectorStack());
+            break;
+        }
+        default:
+            throw std::runtime_error("Неизвестный тип контейнера");
+    }
+    _containerType = container;
+}
+void Stack::setImplementation(const Stack& copyStack) {
+    switch (copyStack._containerType) {
+        case StackContainer::List: {
+            _pimpl = static_cast<IStackImplementation*>(new ListStack(*dynamic_cast<ListStack*>(copyStack._pimpl)));
+            break;
+        }
+        case StackContainer::Vector: {
+            _pimpl = static_cast<IStackImplementation*>(new VectorStack(*dynamic_cast<VectorStack*>(copyStack._pimpl)));
+            break;
+        }
+        default:
+            throw std::runtime_error("Неизвестный тип контейнера");
+    }
+    _containerType = copyStack._containerType;
+}
 
