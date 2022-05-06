@@ -6,7 +6,7 @@
 #define DATASTRUCTURES_VECTORSTACK_H
 
 #include "StackImplementation.h"
-#include "../vector/Vector.h"
+#include "vector"
 
 
 class VectorStack : public IStackImplementation {
@@ -21,7 +21,7 @@ public:
     size_t size() const override;
 
 private:
-    Vector _vector;
+    std::vector<ValueType> _vector;
 };
 
 

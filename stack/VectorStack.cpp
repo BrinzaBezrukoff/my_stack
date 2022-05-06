@@ -6,19 +6,19 @@
 
 
 VectorStack::VectorStack(const ValueType* valueArray, const size_t arraySize) {
-    _vector.insert(valueArray, arraySize, 0);
+    _vector.insert(_vector.begin(), valueArray, valueArray + arraySize);
 }
 
 void VectorStack::push(const ValueType& value) {
-    _vector.pushBack(value);
+    _vector.push_back(value);
 }
 
 void VectorStack::pop() {
-    _vector.popBack();
+    _vector.pop_back();
 }
 
 const ValueType& VectorStack::top() const {
-    return _vector[_vector.size() - 1];
+    return _vector.back();
 }
 
 bool VectorStack::isEmpty() const {
